@@ -45,3 +45,36 @@ function unidecode() {
 	perl -e "binmode(STDOUT, ':utf8'); print \"$@\""
 	echo # newline
 }
+
+# Lessify and minify every .less into .css files recursively
+lessd() {
+  for file in $(find . -name "*.less" -type f); do lessc -x $file ${file/%less/css};  done
+}
+
+# minify every .js using yuicompressor (ignoring *-min.js)
+jsmin() {
+  which yuicompressor;
+  if [ $? -eq 0 ]
+  then
+    for f in $(find . -type f -name "*.js" -a ! -name "*-min.js"); do
+      echo "js-min $f"
+      yuicompressor -o ${f/%\.js/-min\.js} $f; 
+    done
+  else
+    echo "yuicompressor must be installed";
+  fi
+}
+
+# minify every .css using yuicompressor (ignoring *-min.css)
+cssmin() {
+  which yuicompressor;
+  if [ $? -eq 0 ]
+  then
+    for f in $(find . -type f -name "*.css" -a ! -name "*-min.css"); do
+      echo "css-min $f"
+      yuicompressor -o ${f/%\.css/-min\.css} $f; 
+    done
+  else
+    echo "yuicompressor must be installed";
+  fi
+}
