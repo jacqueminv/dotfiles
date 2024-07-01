@@ -1,0 +1,39 @@
+{{- if (eq .chezmoi.os "darwin") -}}
+#!/bin/bash
+
+set -eufo pipefail
+
+formulae=(
+  bat
+  curl
+  fzf
+  git
+  jq
+  less
+  nvim
+)
+casks=(
+  nikitabobko/tap/aerospace
+  clipy
+  iterm2
+)
+{{ if .work_device }}
+  formulae+=(
+    intellij-idea
+    go-jira
+    mitmproxy
+  )
+{{ else }}
+  formulae+=(
+    intellij-idea-ce
+  )
+{{ end }}
+
+brew update
+
+brew install ${formulae[@]}
+brew install --cask ${casks[@]}
+
+brew cleanup
+
+{{ end }}
